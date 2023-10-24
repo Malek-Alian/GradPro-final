@@ -1,0 +1,61 @@
+name: graduation_project
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_screenutil: ^5.7.0
+  flutter_svg: ^2.0.5
+  simple_gradient_text: ^1.2.4
+  google_fonts: ^5.1.0
+  salomon_bottom_bar: ^3.3.2
+  firebase_core: ^2.11.0
+  firebase_auth: ^4.5.0
+  cloud_firestore: ^4.6.0
+  provider: ^6.0.5
+  fluttertoast: ^8.2.1
+  shared_preferences: ^2.1.1
+  easy_localization: ^3.0.1
+  image_picker: ^1.0.4
+  firebase_storage: ^11.1.2
+  flutter_phoenix: ^1.1.1
+  pull_to_refresh: ^2.0.0
+  firebase_messaging: ^14.4.1
+  panara_dialogs: ^0.1.4
+  shimmer: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+dependency_overrides:
+  intl: ^0.18.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/bnav_icons/
+    - assets/images/intro_images/
+    - assets/languages/
+
+  fonts:
+    - family: Bruno Ace SC
+      fonts:
+       - asset: assets/fonts/BrunoAceSC-Regular.ttf

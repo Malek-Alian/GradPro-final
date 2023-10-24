@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "16494703895",
+    "project_id": "gpms-54ee4",
+    "storage_bucket": "gpms-54ee4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:16494703895:android:d28fc77d7988a7f6e1f352",
+        "android_client_info": {
+          "package_name": "com.example.graduation_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "16494703895-o1ounoil3o20o3998e4lc4d4fqno5cic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAKYUTcQ6dd1Qg8UTVOa_I8IefazR905I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "16494703895-o1ounoil3o20o3998e4lc4d4fqno5cic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
