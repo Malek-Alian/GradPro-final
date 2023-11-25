@@ -27,8 +27,8 @@ class TeamsPage extends StatelessWidget {
         stream: user.student == null && user.instructor == null
             ? project.getProjectsForGuest
             : user.isStudent()
-                ? project.getProjectsForStudent
-                : project.getProjectsForInstructor,
+                ? project.getProjectsForGuest
+                : project.getProjectsForGuest,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<ProjectModel> projectData = snapshot.data ?? [];
@@ -65,7 +65,11 @@ class TeamsPage extends StatelessWidget {
                                   leading: const Icon(Icons.groups),
                                   title:
                                       Text('${projectData[index].projectName}'),
-                                  trailing: !(user.student?.hasTeam ?? false)
+                                  trailing: !(user.student?.hasTeam ?? false) &&
+                                          projectData[index].major ==
+                                              user.student?.major &&
+                                          projectData[index].projectLevel ==
+                                              user.student?.projectLevel
                                       ? OutlinedButton(
                                           onPressed: () {
                                             PanaraConfirmDialog.show(
@@ -81,32 +85,46 @@ class TeamsPage extends StatelessWidget {
                                                 Navigator.pop(context);
                                               },
                                               onTapConfirm: () async {
-                                                var members =
-                                                    projectData[index].members;
-                                                for (var member
-                                                    in members ?? []) {
-                                                  await user.updateStudentByID(
-                                                    studentID: member,
-                                                    alert: {
-                                                      'studentID':
-                                                          '${user.student?.studentID}',
-                                                      'title':
-                                                          '${user.student?.firstName} ${user.student?.lastName}',
-                                                      'body':
-                                                          'Can i join your team ?',
-                                                      'picture':
-                                                          '${user.student?.profilePicture}',
-                                                      'type': 'join',
-                                                    },
+                                                if (projectData[index]
+                                                        .members!
+                                                        .length <
+                                                    3) {
+                                                  var members =
+                                                      projectData[index]
+                                                          .members;
+                                                  for (var member
+                                                      in members ?? []) {
+                                                    await user
+                                                        .updateStudentByID(
+                                                      studentID: member,
+                                                      alert: {
+                                                        'studentID':
+                                                            '${user.student?.studentID}',
+                                                        'title':
+                                                            '${user.student?.firstName} ${user.student?.lastName}',
+                                                        'body':
+                                                            'Can i join your team ?',
+                                                        'picture':
+                                                            '${user.student?.profilePicture}',
+                                                        'type': 'join',
+                                                      },
+                                                    );
+                                                  }
+                                                  navigator.pop();
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        'Join request sent to ${projectData[index].projectName}',
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                  );
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        'The team has reached maximum number of members',
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
                                                   );
                                                 }
-                                                navigator.pop();
-                                                Fluttertoast.showToast(
-                                                  msg:
-                                                      'Join request sent to ${projectData[index].projectName}',
-                                                  toastLength:
-                                                      Toast.LENGTH_LONG,
-                                                );
                                               },
                                               panaraDialogType:
                                                   PanaraDialogType.custom,
@@ -142,58 +160,86 @@ class TeamsPage extends StatelessWidget {
                             child: ListTile(
                               leading: const Icon(Icons.groups),
                               title: Text('${projectData[index].projectName}'),
-                              trailing: OutlinedButton(
-                                onPressed: () {
-                                  PanaraConfirmDialog.show(
-                                    context,
-                                    color: Colors.red,
-                                    textColor: Colors.black,
-                                    title: "areYouSure".tr(),
-                                    message:
-                                        "${'supervisionRequest?'.tr()} ${projectData[index].projectName}${'?'.tr()}",
-                                    confirmButtonText: "confirm".tr(),
-                                    cancelButtonText: "cancel".tr(),
-                                    onTapCancel: () {
-                                      Navigator.pop(context);
-                                    },
-                                    onTapConfirm: () async {
-                                      var members = projectData[index].members;
-                                      for (var member in members ?? []) {
-                                        await user.updateStudentByID(
-                                          studentID: member,
-                                          alert: {
-                                            'instructorEmail':
-                                                '${user.instructor?.instructorEmail}',
-                                            'title':
-                                                'Dr. ${user.instructor?.firstName} ${user.instructor?.lastName}',
-                                            'body':
-                                                'Can i be your team supervisor ?',
-                                            'picture':
-                                                '${user.instructor?.profilePicture}',
-                                            'type': 'request',
+                              trailing: projectData[index].major ==
+                                      user.instructor?.major
+                                  ? OutlinedButton(
+                                      onPressed: () {
+                                        PanaraConfirmDialog.show(
+                                          context,
+                                          color: Colors.red,
+                                          textColor: Colors.black,
+                                          title: "areYouSure".tr(),
+                                          message:
+                                              "${'supervisionRequest?'.tr()} ${projectData[index].projectName}${'?'.tr()}",
+                                          confirmButtonText: "confirm".tr(),
+                                          cancelButtonText: "cancel".tr(),
+                                          onTapCancel: () {
+                                            Navigator.pop(context);
                                           },
+                                          onTapConfirm: () async {
+                                            if (projectData[index]
+                                                    .supervisorName ==
+                                                '') {
+                                              if (user.instructor!.teams!
+                                                      .length <
+                                                  3) {
+                                                var members =
+                                                    projectData[index].members;
+                                                for (var member
+                                                    in members ?? []) {
+                                                  await user.updateStudentByID(
+                                                    studentID: member,
+                                                    alert: {
+                                                      'instructorEmail':
+                                                          '${user.instructor?.instructorEmail}',
+                                                      'title':
+                                                          'Dr. ${user.instructor?.firstName} ${user.instructor?.lastName}',
+                                                      'body':
+                                                          'Can i be your team supervisor ?',
+                                                      'picture':
+                                                          '${user.instructor?.profilePicture}',
+                                                      'type': 'request',
+                                                    },
+                                                  );
+                                                }
+                                                navigator.pop();
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      'Supervision request sent to ${projectData[index].projectName}',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                );
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      'You cannot have more than 3 teams',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                );
+                                              }
+                                            } else {
+                                              Fluttertoast.showToast(
+                                                msg:
+                                                    'The team already has supervisor',
+                                                toastLength: Toast.LENGTH_LONG,
+                                              );
+                                            }
+                                          },
+                                          panaraDialogType:
+                                              PanaraDialogType.custom,
                                         );
-                                      }
-                                      navigator.pop();
-                                      Fluttertoast.showToast(
-                                        msg:
-                                            'Supervision request sent to ${projectData[index].projectName}',
-                                        toastLength: Toast.LENGTH_LONG,
-                                      );
-                                    },
-                                    panaraDialogType: PanaraDialogType.custom,
-                                  );
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  side: BorderSide(
-                                    width: 2,
-                                    color: theme.isDark
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                                ),
-                                child: const Text('request').tr(),
-                              ),
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                          width: 2,
+                                          color: theme.isDark
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                      child: const Text('request').tr(),
+                                    )
+                                  : null,
                               onTap: () {
                                 showDialog(
                                   context: context,

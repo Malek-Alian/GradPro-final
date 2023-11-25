@@ -59,6 +59,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
   @override
   Widget build(BuildContext context) {
     final UserAuth auth = Provider.of<UserAuth>(context);
+    final UsersFirestore user = Provider.of<UsersFirestore>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -107,7 +108,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     fontWeight: FontWeight.bold,
                     color: Color(0xFFEA5455),
                   ),
-                ),
+                ).tr(),
                 const SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment
@@ -343,41 +344,55 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                                             ))
                                                         .toList(),
                                                   ),
-                                                  if (auth.currentUser.uid !=
-                                                      student.studentUID)
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                  if (auth.currentUser.uid !=
-                                                      student.studentUID)
-                                                    SizedBox(
-                                                      width: double.infinity,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.pushNamed(
-                                                              context,
-                                                              ChatPage
-                                                                  .routeName,
-                                                              arguments: {
-                                                                'personUID': student
-                                                                    .studentUID,
-                                                                'studentID':
-                                                                    student
-                                                                        .studentID,
-                                                                'firstName':
-                                                                    student
-                                                                        .firstName,
-                                                                'lastName':
-                                                                    student
-                                                                        .lastName,
-                                                                'chats': student
-                                                                    .chats,
-                                                              });
-                                                        },
-                                                        child: const Text(
-                                                            'Send Message'),
+                                                  if (user.student
+                                                              ?.studentUID !=
+                                                          null ||
+                                                      user.instructor
+                                                              ?.instructorUID !=
+                                                          null)
+                                                    if (auth.currentUser.uid !=
+                                                        student.studentUID)
+                                                      const SizedBox(
+                                                        height: 10,
                                                       ),
-                                                    ),
+                                                  if (user.student
+                                                              ?.studentUID !=
+                                                          null ||
+                                                      user.instructor
+                                                              ?.instructorUID !=
+                                                          null)
+                                                    if (auth.currentUser.uid !=
+                                                        student.studentUID)
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                ChatPage
+                                                                    .routeName,
+                                                                arguments: {
+                                                                  'personUID':
+                                                                      student
+                                                                          .studentUID,
+                                                                  'studentID':
+                                                                      student
+                                                                          .studentID,
+                                                                  'firstName':
+                                                                      student
+                                                                          .firstName,
+                                                                  'lastName':
+                                                                      student
+                                                                          .lastName,
+                                                                  'chats':
+                                                                      student
+                                                                          .chats,
+                                                                });
+                                                          },
+                                                          child: const Text(
+                                                              'Send Message'),
+                                                        ),
+                                                      ),
                                                 ],
                                               ),
                                             ],

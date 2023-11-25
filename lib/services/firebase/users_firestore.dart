@@ -210,9 +210,7 @@ class UsersFirestore extends ChangeNotifier {
 
   Stream<List<StudentModel>?> get getStudents {
     return _studentCollection
-        .where('major', isEqualTo: student?.major)
         .where('registered', isEqualTo: true)
-        .where('projectLevel', isEqualTo: student?.projectLevel)
         .where('hasTeam', isEqualTo: false)
         .orderBy('firstName')
         .snapshots()

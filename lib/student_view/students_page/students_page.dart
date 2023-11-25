@@ -60,7 +60,10 @@ class StudentsPage extends StatelessWidget {
                         ),
                   title: Text(
                       '${studentData[index].firstName} ${studentData[index].lastName}'),
-                  trailing: student.student?.hasTeam ?? false
+                  trailing: (student.student?.hasTeam ?? false) &&
+                          studentData[index].projectLevel ==
+                              student.student?.projectLevel &&
+                          studentData[index].major == student.student?.major
                       ? OutlinedButton(
                           onPressed: () {
                             PanaraConfirmDialog.show(

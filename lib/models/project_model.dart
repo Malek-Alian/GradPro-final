@@ -9,7 +9,8 @@ class ProjectModel {
       this.major,
       this.projectLevel,
       this.members,
-      this.tasks});
+      this.tasks,
+      this.files});
 
   String? projectID;
   String? projectName;
@@ -21,6 +22,7 @@ class ProjectModel {
   int? createdAt;
   List<dynamic>? members;
   List<dynamic>? tasks;
+  List<dynamic>? files;
 
   ProjectModel.fromMap(Map<String, dynamic> data)
       : assert(data.isNotEmpty),
@@ -33,7 +35,8 @@ class ProjectModel {
         projectLevel = data['projectLevel'],
         major = data['major'],
         members = data['members'],
-        tasks = data['tasks'];
+        tasks = data['tasks'],
+        files = data['files'];
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -47,6 +50,7 @@ class ProjectModel {
     data['projectLevel'] = projectLevel;
     data['members'] = members;
     data['tasks'] = tasks;
+    data['files'] = files;
     return data;
   }
 }

@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:graduation_project/models/student_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -133,91 +135,192 @@ class AlertsPage extends StatelessWidget {
                                                         ?.alerts![reversedIndex]
                                                     ['type'] ==
                                                 'invite') {
-                                              await project.loadProjectData(
-                                                  projectID:
-                                                      user.student?.alerts![
-                                                              reversedIndex]
-                                                          ['projectID']);
-                                              project.projectData?.members?.add(
-                                                  user.student?.studentID);
-                                              await project.updateProjectData(
-                                                  members: project
-                                                      .projectData?.members,
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              await user.updateStudentData(
-                                                  hasTeam: true,
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              user.student?.alerts
-                                                  ?.removeAt(reversedIndex);
-                                              await user.updateStudentData(
-                                                  alerts: user.student?.alerts);
-                                              navigator.pushNamedAndRemoveUntil(
-                                                StudentMainScaffold.routeName,
-                                                (route) => false,
-                                              );
+                                              if (!(user.student?.hasTeam ??
+                                                  false)) {
+                                                final projectData =
+                                                    await project
+                                                        .getProjectByID(user
+                                                                    .student
+                                                                    ?.alerts![
+                                                                reversedIndex]
+                                                            ['projectID']);
+                                                if (projectData!
+                                                        .members!.length <
+                                                    4) {
+                                                  await project.loadProjectData(
+                                                      projectID:
+                                                          user.student?.alerts![
+                                                                  reversedIndex]
+                                                              ['projectID']);
+                                                  project.projectData?.members
+                                                      ?.add(user
+                                                          .student?.studentID);
+                                                  await project
+                                                      .updateProjectData(
+                                                          members: project
+                                                              .projectData
+                                                              ?.members,
+                                                          projectID: project
+                                                              .projectData
+                                                              ?.projectID);
+                                                  await user.updateStudentData(
+                                                      hasTeam: true,
+                                                      projectID: project
+                                                          .projectData
+                                                          ?.projectID);
+                                                  user.student?.alerts
+                                                      ?.removeAt(reversedIndex);
+                                                  await user.updateStudentData(
+                                                      alerts:
+                                                          user.student?.alerts);
+                                                  navigator
+                                                      .pushNamedAndRemoveUntil(
+                                                    StudentMainScaffold
+                                                        .routeName,
+                                                    (route) => false,
+                                                  );
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        'The team has reached maximum number members',
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                  );
+                                                }
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      'You are already in a team',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                );
+                                              }
                                             }
                                             // ! Join
                                             else if (user.student
                                                         ?.alerts![reversedIndex]
                                                     ['type'] ==
                                                 'join') {
-                                              project.projectData?.members?.add(
-                                                  user.student?.alerts![
-                                                          reversedIndex]
-                                                      ['studentID']);
-                                              await project.updateProjectData(
-                                                  members: project
-                                                      .projectData?.members,
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              await project.loadProjectData(
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              await user.updateStudentByID(
-                                                  studentID:
-                                                      user.student?.alerts![
-                                                              reversedIndex]
-                                                          ['studentID'],
-                                                  hasTeam: true,
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              user.student?.alerts
-                                                  ?.removeAt(reversedIndex);
-                                              await user.updateStudentData(
-                                                  alerts: user.student?.alerts);
+                                              if (project.projectData!.members!
+                                                      .length <
+                                                  4) {
+                                                StudentModel student =
+                                                    await user.getStudentByID(
+                                                        studentID: user.student
+                                                                    ?.alerts![
+                                                                reversedIndex]
+                                                            ['studentID']);
+                                                if (!(student.hasTeam ??
+                                                    false)) {
+                                                  project.projectData?.members
+                                                      ?.add(
+                                                          user.student
+                                                                      ?.alerts![
+                                                                  reversedIndex]
+                                                              ['studentID']);
+                                                  await project
+                                                      .updateProjectData(
+                                                          members: project
+                                                              .projectData
+                                                              ?.members,
+                                                          projectID: project
+                                                              .projectData
+                                                              ?.projectID);
+                                                  await project.loadProjectData(
+                                                      projectID: project
+                                                          .projectData
+                                                          ?.projectID);
+                                                  await user.updateStudentByID(
+                                                      studentID:
+                                                          user.student?.alerts![
+                                                                  reversedIndex]
+                                                              ['studentID'],
+                                                      hasTeam: true,
+                                                      projectID: project
+                                                          .projectData
+                                                          ?.projectID);
+                                                  user.student?.alerts
+                                                      ?.removeAt(reversedIndex);
+                                                  await user.updateStudentData(
+                                                      alerts:
+                                                          user.student?.alerts);
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        'Student already has team',
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                  );
+                                                }
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      'Your team has reached maximum number of members',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                );
+                                              }
                                             }
                                             // ! Request
                                             else if (user.student
                                                         ?.alerts![reversedIndex]
                                                     ['type'] ==
                                                 'request') {
-                                              InstructorModel? instructor =
-                                                  await user.getInstructorByEmail(
-                                                      user.student?.alerts![
-                                                              reversedIndex]
-                                                          ['instructorEmail']);
-                                              await user.updateInstructorByEmail(
-                                                  instructorEmail:
-                                                      user.student?.alerts![
-                                                              reversedIndex]
-                                                          ['instructorEmail'],
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              await project.updateProjectData(
-                                                supervisorName:
-                                                    '${instructor?.firstName} ${instructor?.lastName}',
-                                                projectID: project
-                                                    .projectData?.projectID,
-                                              );
-                                              await project.loadProjectData(
-                                                  projectID: project
-                                                      .projectData?.projectID);
-                                              user.student?.alerts
-                                                  ?.removeAt(reversedIndex);
-                                              await user.updateStudentData(
-                                                  alerts: user.student?.alerts);
+                                              if (project.projectData
+                                                      ?.supervisorName ==
+                                                  '') {
+                                                InstructorModel? instructor =
+                                                    await user
+                                                        .getInstructorByEmail(user
+                                                                    .student
+                                                                    ?.alerts![
+                                                                reversedIndex][
+                                                            'instructorEmail']);
+                                                if (instructor!.teams!.length <
+                                                    3) {
+                                                  await user
+                                                      .updateInstructorByEmail(
+                                                          instructorEmail: user
+                                                                      .student
+                                                                      ?.alerts![
+                                                                  reversedIndex]
+                                                              [
+                                                              'instructorEmail'],
+                                                          projectID: project
+                                                              .projectData
+                                                              ?.projectID);
+                                                  await project
+                                                      .updateProjectData(
+                                                    supervisorName:
+                                                        '${instructor.firstName} ${instructor.lastName}',
+                                                    projectID: project
+                                                        .projectData?.projectID,
+                                                  );
+                                                  await project.loadProjectData(
+                                                      projectID: project
+                                                          .projectData
+                                                          ?.projectID);
+                                                  user.student?.alerts
+                                                      ?.removeAt(reversedIndex);
+                                                  await user.updateStudentData(
+                                                      alerts:
+                                                          user.student?.alerts);
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                    msg:
+                                                        'Supervisor has reached maximum number of teams',
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                  );
+                                                }
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      'Your team already has supervisor',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                );
+                                              }
                                             }
                                           },
                                           child: const Text('accept').tr(),
@@ -337,33 +440,63 @@ class AlertsPage extends StatelessWidget {
                                                         ?.alerts![reversedIndex]
                                                     ['type'] ==
                                                 'ask') {
-                                              user.instructor?.teams?.add(user
-                                                      .instructor
-                                                      ?.alerts![reversedIndex]
-                                                  ['projectID']);
-                                              await user.updateInstructorData(
-                                                numberOfTeams: (user.instructor
-                                                        ?.numberOfTeams)! +
-                                                    1,
-                                                teams: user.instructor?.teams,
-                                              );
-                                              await project.updateProjectData(
-                                                supervisorName:
-                                                    '${user.instructor?.firstName} ${user.instructor?.lastName}',
-                                                projectID: user.instructor
-                                                        ?.alerts![reversedIndex]
-                                                    ['projectID'],
-                                              );
-                                              user.instructor?.alerts
-                                                  ?.removeAt(reversedIndex);
-                                              await user.updateInstructorData(
-                                                  alerts:
-                                                      user.instructor?.alerts);
-                                              navigator.pushNamedAndRemoveUntil(
-                                                InstructorMainScaffold
-                                                    .routeName,
-                                                (route) => false,
-                                              );
+                                              if (user.instructor!.teams!
+                                                      .length <
+                                                  3) {
+                                                final projectData =
+                                                    await project
+                                                        .getProjectByID(user
+                                                                    .instructor
+                                                                    ?.alerts![
+                                                                reversedIndex]
+                                                            ['projectID']);
+                                                if (projectData
+                                                        ?.supervisorName ==
+                                                    '') {
+                                                  user.instructor?.teams?.add(
+                                                      user.instructor?.alerts![
+                                                              reversedIndex]
+                                                          ['projectID']);
+                                                  await user
+                                                      .updateInstructorData(
+                                                    numberOfTeams: (user
+                                                            .instructor
+                                                            ?.numberOfTeams)! +
+                                                        1,
+                                                    teams:
+                                                        user.instructor?.teams,
+                                                  );
+                                                  await project
+                                                      .updateProjectData(
+                                                    supervisorName:
+                                                        '${user.instructor?.firstName} ${user.instructor?.lastName}',
+                                                    projectID: user.instructor
+                                                                ?.alerts![
+                                                            reversedIndex]
+                                                        ['projectID'],
+                                                  );
+                                                  user.instructor?.alerts
+                                                      ?.removeAt(reversedIndex);
+                                                  await user
+                                                      .updateInstructorData(
+                                                          alerts: user
+                                                              .instructor
+                                                              ?.alerts);
+                                                  navigator
+                                                      .pushNamedAndRemoveUntil(
+                                                    InstructorMainScaffold
+                                                        .routeName,
+                                                    (route) => false,
+                                                  );
+                                                }
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      'You cannot have more than 3 teams',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                );
+                                              }
                                             }
                                           },
                                           child: const Text('accept').tr(),

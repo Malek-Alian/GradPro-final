@@ -270,37 +270,50 @@ class TeamDialog extends StatelessWidget {
                                                         ))
                                                     .toList(),
                                               ),
-                                              if (auth.currentUser.uid !=
-                                                  student.studentUID)
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                              if (auth.currentUser.uid !=
-                                                  student.studentUID)
-                                                SizedBox(
-                                                  width: double.infinity,
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          ChatPage.routeName,
-                                                          arguments: {
-                                                            'personUID': student
-                                                                .studentUID,
-                                                            'studentID': student
-                                                                .studentID,
-                                                            'firstName': student
-                                                                .firstName,
-                                                            'lastName': student
-                                                                .lastName,
-                                                            'chats':
-                                                                student.chats,
-                                                          });
-                                                    },
-                                                    child: const Text(
-                                                        'Send Message'),
+                                              if (user.student?.studentUID !=
+                                                      null ||
+                                                  user.instructor
+                                                          ?.instructorUID !=
+                                                      null)
+                                                if (auth.currentUser.uid !=
+                                                    student.studentUID)
+                                                  const SizedBox(
+                                                    height: 10,
                                                   ),
-                                                ),
+                                              if (user.student?.studentUID !=
+                                                      null ||
+                                                  user.instructor
+                                                          ?.instructorUID !=
+                                                      null)
+                                                if (auth.currentUser.uid !=
+                                                    student.studentUID)
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            ChatPage.routeName,
+                                                            arguments: {
+                                                              'personUID': student
+                                                                  .studentUID,
+                                                              'studentID':
+                                                                  student
+                                                                      .studentID,
+                                                              'firstName':
+                                                                  student
+                                                                      .firstName,
+                                                              'lastName':
+                                                                  student
+                                                                      .lastName,
+                                                              'chats':
+                                                                  student.chats,
+                                                            });
+                                                      },
+                                                      child: const Text(
+                                                          'Send Message'),
+                                                    ),
+                                                  ),
                                             ],
                                           ),
                                         ],
@@ -324,6 +337,30 @@ class TeamDialog extends StatelessWidget {
                       ))
                   .toList(),
             ),
+            projectData[index].supervisorName != ''
+                ? Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      const Text(
+                        'Supervisor',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ).tr(),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Dr. ${projectData[index].supervisorName}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
           ],
         ),
       ),

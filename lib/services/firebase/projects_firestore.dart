@@ -67,6 +67,7 @@ class ProjectsFirestore extends ChangeNotifier {
       project.members = [student?.studentID];
       project.supervisorName = '';
       project.tasks = [];
+      project.files = [];
       await _projectsCollection.add(project.toMap());
       setLoading = false;
       return true;
@@ -89,6 +90,7 @@ class ProjectsFirestore extends ChangeNotifier {
       String? projectID,
       List<dynamic>? members,
       List<dynamic>? tasks,
+      List<dynamic>? files,
       String? bio}) async {
     final docSnap = await _projectsCollection
         .where('projectID', isEqualTo: projectID)
@@ -103,6 +105,9 @@ class ProjectsFirestore extends ChangeNotifier {
     }
     if (tasks != null) {
       doc?.reference.update({'tasks': tasks});
+    }
+    if (files != null) {
+      doc?.reference.update({'files': files});
     }
     if (bio != null) {
       doc?.reference.update({'bio': bio});
@@ -126,33 +131,6 @@ class ProjectsFirestore extends ChangeNotifier {
       doc.reference.update({'teams': instructor?.teams});
       doc.reference.update({'numberOfTeams': instructor?.teams?.length});
     }
-  }
-
-  Stream<List<ProjectModel>?> get getProjectsForStudent {
-    return _projectsCollection
-        .where('major', isEqualTo: student?.major)
-        .where('projectLevel', isEqualTo: student?.projectLevel)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map(_projectListFromSnapshot);
-  }
-
-  Stream<List<ProjectModel>?> get getProjectsForInstructor {
-    return instructor?.teams?.isEmpty ?? true
-        ? _projectsCollection
-            .where('major', isEqualTo: instructor?.major)
-            .where('supervisorName', isEqualTo: '')
-            .orderBy('createdAt', descending: true)
-            .snapshots()
-            .map(_projectListFromSnapshot)
-        : _projectsCollection
-            .where('major', isEqualTo: instructor?.major)
-            .where('supervisorName', isEqualTo: '')
-            .where('projectID', whereNotIn: instructor?.teams)
-            .orderBy('projectID')
-            .orderBy('createdAt', descending: true)
-            .snapshots()
-            .map(_projectListFromSnapshot);
   }
 
   Stream<List<ProjectModel>?> get getProjectsForGuest {

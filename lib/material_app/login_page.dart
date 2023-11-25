@@ -104,8 +104,10 @@ class _LoginPageState extends State<LoginPage> {
                               registered: true, token: token);
                         }
                         // ignore: use_build_context_synchronously
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, Wrapper.routeName, (route) => false);
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, Wrapper.routeName, (route) => false);
+                        });
                       } else {
                         Fluttertoast.showToast(
                           msg: auth.errorMessage,

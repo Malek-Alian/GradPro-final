@@ -6,6 +6,7 @@ import 'package:graduation_project/shared_view/chat_page/chat_page.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/firebase/projects_firestore.dart';
 import '../../services/firebase/users_firestore.dart';
@@ -40,6 +41,14 @@ class _MyTeamPageState extends State<MyTeamPage> {
         );
       },
     );
+  }
+
+  void _launchURL(String? url) async {
+    if (url != null) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -511,6 +520,205 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                   ),
                                 );
                               },
+                            ),
+                            20.verticalSpace,
+                            Text(
+                              '${'Files'.tr()}:',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: project.projectData?.files?.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    _launchURL(project
+                                        .projectData?.files![index]['url']);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 2,
+                                          blurRadius: 5,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 20),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 16),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                project.projectData
+                                                    ?.files![index]['url'],
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.person,
+                                                      size: 16),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    project.projectData
+                                                        ?.files![index]['from'],
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            PanaraConfirmDialog.show(
+                                              context,
+                                              color: Colors.red,
+                                              textColor: Colors.black,
+                                              title: "areYouSure".tr(),
+                                              message: "removeFile?".tr(),
+                                              confirmButtonText: "confirm".tr(),
+                                              cancelButtonText: "cancel".tr(),
+                                              onTapCancel: () {
+                                                Navigator.pop(context);
+                                              },
+                                              onTapConfirm: () async {
+                                                project.projectData?.files
+                                                    ?.removeAt(index);
+                                                await project.updateProjectData(
+                                                    projectID: project
+                                                        .projectData?.projectID,
+                                                    files: project
+                                                        .projectData?.files);
+                                                await project.loadProjectData(
+                                                    projectID: project
+                                                        .projectData
+                                                        ?.projectID);
+                                                navigator.pop();
+                                              },
+                                              panaraDialogType:
+                                                  PanaraDialogType.custom,
+                                            );
+                                          },
+                                          icon: const Icon(
+                                              Icons.remove_circle_outline),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            20.verticalSpace,
+                            ElevatedButton(
+                              onPressed: () {
+                                String url = '';
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    title: Text(
+                                      '${'Enter File URL'.tr()}:',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    content: Form(
+                                      key: formKey,
+                                      child: TextFormField(
+                                        onSaved: (newValue) =>
+                                            url = '$newValue',
+                                        style: const TextStyle(
+                                            color: Colors.black),
+                                        maxLines: null,
+                                        decoration: InputDecoration(
+                                          hintText: 'File URL'.tr(),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.black54),
+                                          border: const OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16)),
+                                          ),
+                                          enabledBorder:
+                                              const OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16)),
+                                            borderSide:
+                                                BorderSide(color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: Text(
+                                          'cancel'.tr(),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          formKey.currentState?.save();
+                                          Map<dynamic, dynamic> task = {
+                                            'url': url,
+                                            'from':
+                                                '${user.student?.firstName} ${user.student?.lastName}',
+                                          };
+                                          project.projectData?.files?.add(task);
+                                          await project.updateProjectData(
+                                            projectID:
+                                                project.projectData?.projectID,
+                                            files: project.projectData?.files,
+                                          );
+                                          await project.loadProjectData(
+                                              projectID: project
+                                                  .projectData?.projectID);
+                                          navigator.pop();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'add',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ).tr(),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: Text('Add File'.tr()),
                             ),
                             20.verticalSpace,
                             Text(
@@ -1026,6 +1234,192 @@ class _MyTeamPageState extends State<MyTeamPage> {
                           ),
                         ),
                       ],
+                    ),
+                    20.verticalSpace,
+                    Text(
+                      '${'Files'.tr()}:',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: project.projectData?.files?.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            _launchURL(
+                                project.projectData?.files![index]['url']);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 20),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        project.projectData?.files![index]
+                                            ['url'],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.person, size: 16),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            project.projectData?.files![index]
+                                                ['from'],
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    PanaraConfirmDialog.show(
+                                      context,
+                                      color: Colors.red,
+                                      textColor: Colors.black,
+                                      title: "areYouSure".tr(),
+                                      message: "removeFile?".tr(),
+                                      confirmButtonText: "confirm".tr(),
+                                      cancelButtonText: "cancel".tr(),
+                                      onTapCancel: () {
+                                        Navigator.pop(context);
+                                      },
+                                      onTapConfirm: () async {
+                                        project.projectData?.files
+                                            ?.removeAt(index);
+                                        await project.updateProjectData(
+                                            projectID:
+                                                project.projectData?.projectID,
+                                            files: project.projectData?.files);
+                                        await project.loadProjectData(
+                                            projectID:
+                                                project.projectData?.projectID);
+                                        navigator.pop();
+                                      },
+                                      panaraDialogType: PanaraDialogType.custom,
+                                    );
+                                  },
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    20.verticalSpace,
+                    ElevatedButton(
+                      onPressed: () {
+                        String url = '';
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                            title: Text(
+                              '${'Enter File URL'.tr()}:',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            content: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                onSaved: (newValue) => url = '$newValue',
+                                style: const TextStyle(color: Colors.black),
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  hintText: 'File URL'.tr(),
+                                  hintStyle:
+                                      const TextStyle(color: Colors.black54),
+                                  border: const OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(16)),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(16)),
+                                    borderSide: BorderSide(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(
+                                  'cancel'.tr(),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  formKey.currentState?.save();
+                                  Map<dynamic, dynamic> task = {
+                                    'url': url,
+                                    'from':
+                                        'Dr. ${user.instructor?.firstName} ${user.instructor?.lastName}',
+                                  };
+                                  project.projectData?.files?.add(task);
+                                  await project.updateProjectData(
+                                    projectID: project.projectData?.projectID,
+                                    files: project.projectData?.files,
+                                  );
+                                  await project.loadProjectData(
+                                      projectID:
+                                          project.projectData?.projectID);
+                                  navigator.pop();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'add',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ).tr(),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Text('Add File'.tr()),
                     ),
                     const SizedBox(height: 30),
                     Text(
