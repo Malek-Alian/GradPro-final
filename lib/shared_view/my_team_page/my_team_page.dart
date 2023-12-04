@@ -426,6 +426,8 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                                                                 student.lastName,
                                                                             'chats':
                                                                                 student.chats,
+                                                                            'teamChat':
+                                                                                false,
                                                                           });
                                                                     },
                                                                     child: const Text(
@@ -1089,6 +1091,8 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                                                     'chats':
                                                                         student
                                                                             .chats,
+                                                                    'teamChat':
+                                                                        false,
                                                                   });
                                                             },
                                                             child: const Text(

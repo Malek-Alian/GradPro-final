@@ -170,6 +170,7 @@ class StudentDialog extends StatelessWidget {
                               'firstName': studentData[index].firstName,
                               'lastName': studentData[index].lastName,
                               'chats': studentData[index].chats,
+                              'teamChat': false,
                             });
                       },
                       child: const Text('Send Message'),

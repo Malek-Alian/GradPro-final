@@ -308,6 +308,7 @@ class TeamDialog extends StatelessWidget {
                                                                       .lastName,
                                                               'chats':
                                                                   student.chats,
+                                                              'teamChat': false,
                                                             });
                                                       },
                                                       child: const Text(

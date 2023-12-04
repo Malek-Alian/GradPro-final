@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:graduation_project/services/firebase/chats_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/firebase/projects_firestore.dart';
@@ -32,6 +33,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   Widget build(BuildContext context) {
     final ProjectsFirestore project = Provider.of<ProjectsFirestore>(context);
     final UsersFirestore user = Provider.of<UsersFirestore>(context);
+    final ChatsFirestore chats = Provider.of<ChatsFirestore>(context);
     String? name;
     String? bio;
 
@@ -100,6 +102,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         String projectID = generateRandomString(6);
+                        // ignore: non_constant_identifier_names
+                        final IDs = await project.getAllProjectIDs();
+                        while (IDs.contains(projectID)) {
+                          projectID = generateRandomString(6);
+                        }
                         CreateTeamPage._formKey.currentState?.save();
                         if (await project.createProject(
                             createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -111,6 +118,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                           await project.loadProjectData(projectID: projectID);
                           await user.updateStudentData(
                               hasTeam: true, projectID: projectID);
+                          await chats.createChat(projectID);
                           if (!mounted) return;
                           Navigator.pushNamedAndRemoveUntil(context,
                               StudentMainScaffold.routeName, (route) => false);

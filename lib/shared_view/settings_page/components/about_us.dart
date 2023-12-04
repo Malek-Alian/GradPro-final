@@ -387,6 +387,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                                                   'chats':
                                                                       student
                                                                           .chats,
+                                                                  'teamChat':
+                                                                      false,
                                                                 });
                                                           },
                                                           child: const Text(

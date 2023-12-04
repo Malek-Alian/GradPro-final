@@ -133,6 +133,27 @@ class ProjectsFirestore extends ChangeNotifier {
     }
   }
 
+  Future<List<String>> getAllProjectIDs() async {
+    try {
+      final querySnapshot = await _projectsCollection.get();
+      return querySnapshot.docs.map((doc) {
+        return doc['projectID'] as String;
+      }).toList();
+    } on SocketException {
+      setLoading = false;
+      setMessage = 'No Internet';
+      return [];
+    } on FirebaseAuthException catch (error) {
+      setLoading = false;
+      setMessage = error.message ?? '';
+      return [];
+    } catch (e) {
+      setLoading = false;
+      setMessage = e.toString();
+      return [];
+    }
+  }
+
   Stream<List<ProjectModel>?> get getProjectsForGuest {
     return _projectsCollection
         .orderBy('createdAt', descending: true)

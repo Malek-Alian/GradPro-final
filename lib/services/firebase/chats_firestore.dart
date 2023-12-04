@@ -5,6 +5,16 @@ class ChatsFirestore extends ChangeNotifier {
   final CollectionReference _chatsCollection =
       FirebaseFirestore.instance.collection('Chats');
 
+  Future<void> createChat(String chatId) async {
+    try {
+      DocumentReference chatRef = _chatsCollection.doc(chatId);
+      await chatRef.set({'created_at': FieldValue.serverTimestamp()});
+    } catch (error) {
+      // ignore: avoid_print
+      print("Error creating chat document: $error");
+    }
+  }
+
   Future<void> createMessage(
       String chatId, Map<String, dynamic> messageData) async {
     try {

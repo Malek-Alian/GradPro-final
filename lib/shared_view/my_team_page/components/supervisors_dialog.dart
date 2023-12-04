@@ -327,6 +327,7 @@ class SupervisorsDialog extends StatelessWidget {
                                                     'chats':
                                                         instructorData[index]
                                                             .chats,
+                                                    'teamChat': false,
                                                   });
                                             },
                                             child: const Text('Send Message'),
