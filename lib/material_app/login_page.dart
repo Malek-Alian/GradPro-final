@@ -65,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                   onSaved: (newValue) => auth.setUserPassword = newValue,
                   decoration: InputDecoration(
-                    helperText: 'passwordHelper'.tr(),
                     hintText: 'password'.tr(),
                   ),
                 ),
@@ -95,12 +94,12 @@ class _LoginPageState extends State<LoginPage> {
                         if (user.email?.contains('std') ?? false) {
                           String? token =
                               await FirebaseMessaging.instance.getToken();
-                          userFirestore.updateStudentData(
+                          await userFirestore.updateStudentData(
                               registered: true, token: token);
                         } else {
                           String? token =
                               await FirebaseMessaging.instance.getToken();
-                          userFirestore.updateInstructorData(
+                          await userFirestore.updateInstructorData(
                               registered: true, token: token);
                         }
                         // ignore: use_build_context_synchronously

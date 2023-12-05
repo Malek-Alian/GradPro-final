@@ -223,6 +223,7 @@ class ProfilePage extends StatelessWidget {
                                     navigator.pop();
                                   },
                                   style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red[700],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -257,7 +258,12 @@ class ProfilePage extends StatelessWidget {
                               runSpacing: 10,
                               children: list!
                                   .map((skill) => Chip(
-                                        label: Text(skill),
+                                        label: Text(
+                                          skill,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
                                       ))
                                   .toList()
                                   .cast<Widget>(),
@@ -280,6 +286,9 @@ class ProfilePage extends StatelessWidget {
                                             return Chip(
                                               label: Text(
                                                 '${project.projectName}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                ),
                                               ),
                                             );
                                           } else {
@@ -433,6 +442,8 @@ class ProfilePage extends StatelessWidget {
                                                 navigator.pop();
                                               },
                                               style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.red[700],
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(8),

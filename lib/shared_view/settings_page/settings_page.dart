@@ -35,7 +35,12 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         ListTile(
           leading: const Icon(Icons.person),
-          title: const Text('profile').tr(),
+          title: Text(
+            'profile',
+            style: TextStyle(
+              color: theme.isDark ? Colors.white : Colors.black,
+            ),
+          ).tr(),
           onTap: () {
             user.student == null && user.instructor == null
                 ? showDialog(
@@ -57,7 +62,12 @@ class _SettingsPageState extends State<SettingsPage> {
         const Divider(),
         ListTile(
           leading: const Icon(Icons.language),
-          title: const Text('language').tr(),
+          title: Text(
+            'language',
+            style: TextStyle(
+              color: theme.isDark ? Colors.white : Colors.black,
+            ),
+          ).tr(),
           onTap: () {
             showDialog(
               context: context,
@@ -68,7 +78,12 @@ class _SettingsPageState extends State<SettingsPage> {
         const Divider(),
         SwitchListTile.adaptive(
           secondary: const Icon(Icons.dark_mode),
-          title: const Text('darkMode').tr(),
+          title: Text(
+            'darkMode',
+            style: TextStyle(
+              color: theme.isDark ? Colors.white : Colors.black,
+            ),
+          ).tr(),
           value: theme.isDark,
           onChanged: (value) {
             theme.changeTheme = value;
@@ -77,7 +92,12 @@ class _SettingsPageState extends State<SettingsPage> {
         const Divider(),
         ListTile(
           leading: const Icon(Icons.info_outline),
-          title: const Text('aboutUs').tr(),
+          title: Text(
+            'aboutUs',
+            style: TextStyle(
+              color: theme.isDark ? Colors.white : Colors.black,
+            ),
+          ).tr(),
           onTap: () {
             Navigator.pushNamed(context, AboutUsPage.routeName);
           },

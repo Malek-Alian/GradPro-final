@@ -70,7 +70,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
-        ),
+        ).tr(),
       ),
       body: SafeArea(
         child: Padding(
@@ -86,7 +86,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     fontWeight: FontWeight.bold,
                     color: Color(0xFFEA5455),
                   ),
-                ),
+                ).tr(),
                 const SizedBox(height: 50.0),
                 SvgPicture.asset(
                   'assets/images/logo.svg',

@@ -59,7 +59,11 @@ class StudentsPage extends StatelessWidget {
                           ),
                         ),
                   title: Text(
-                      '${studentData[index].firstName} ${studentData[index].lastName}'),
+                    '${studentData[index].firstName} ${studentData[index].lastName}',
+                    style: TextStyle(
+                      color: theme.isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
                   trailing: (student.student?.hasTeam ?? false) &&
                           studentData[index].projectLevel ==
                               student.student?.projectLevel &&

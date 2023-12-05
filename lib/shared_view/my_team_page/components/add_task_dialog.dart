@@ -152,6 +152,7 @@ class AddTaskDialog extends StatelessWidget {
                 navigator.pop();
               },
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[700],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

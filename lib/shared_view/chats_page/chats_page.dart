@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:graduation_project/models/instructor_model.dart';
 import 'package:graduation_project/models/project_model.dart';
 import 'package:graduation_project/models/student_model.dart';
 import 'package:graduation_project/services/firebase/chats_firestore.dart';
 import 'package:graduation_project/services/firebase/projects_firestore.dart';
 import 'package:graduation_project/services/firebase/user_auth.dart';
 import 'package:graduation_project/services/firebase/users_firestore.dart';
+import 'package:graduation_project/services/theme/change_theme.dart';
 import 'package:graduation_project/shared_view/chat_page/chat_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -26,6 +28,7 @@ class _ChatsPageState extends State<ChatsPage> {
     final UsersFirestore user = Provider.of<UsersFirestore>(context);
     final ChatsFirestore chat = Provider.of<ChatsFirestore>(context);
     final ProjectsFirestore projects = Provider.of<ProjectsFirestore>(context);
+    final ChangeTheme theme = Provider.of<ChangeTheme>(context);
 
     List<dynamic> chatUserIds = [];
 
@@ -42,8 +45,6 @@ class _ChatsPageState extends State<ChatsPage> {
         final personData = await user.getPersonByUID(uid: uid);
         return personData;
       } catch (error) {
-        // ignore: avoid_print
-        print("Error fetching person data: $error");
         return null;
       }
     }
@@ -52,7 +53,6 @@ class _ChatsPageState extends State<ChatsPage> {
       try {
         return await projects.getProjectByID(projectID);
       } catch (e) {
-        print('Error loading chat data: $e');
         return null;
       }
     }
@@ -98,7 +98,9 @@ class _ChatsPageState extends State<ChatsPage> {
                                       final projectData =
                                           messageSnapshot.data as ProjectModel;
                                       return Card(
-                                        color: Colors.blueGrey[900],
+                                        color: theme.isDark
+                                            ? Colors.blueGrey[900]
+                                            : Colors.blueGrey[200],
                                         elevation: 4,
                                         margin: const EdgeInsets.all(8),
                                         child: ListTile(
@@ -147,10 +149,13 @@ class _ChatsPageState extends State<ChatsPage> {
                                                                 unreadMessagesCount
                                                                     .toString(),
                                                                 style:
-                                                                    const TextStyle(
+                                                                    TextStyle(
                                                                   fontSize: 16,
-                                                                  color: Colors
-                                                                      .white,
+                                                                  color: theme.isDark
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
                                                                 ),
                                                               ),
                                                             )
@@ -183,9 +188,12 @@ class _ChatsPageState extends State<ChatsPage> {
                                           ),
                                           title: Text(
                                             '${projectData.projectName}',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
+                                              color: theme.isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
                                             ),
                                           ),
                                           subtitle: FutureBuilder(
@@ -204,8 +212,10 @@ class _ChatsPageState extends State<ChatsPage> {
                                                               'messageText']
                                                           .toString()
                                                       : 'No messages',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
+                                                  style: TextStyle(
+                                                    color: theme.isDark
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                   ),
                                                 );
                                               } else if (messageSnapshot
@@ -301,7 +311,9 @@ class _ChatsPageState extends State<ChatsPage> {
                                         final projectData = messageSnapshot.data
                                             as ProjectModel;
                                         return Card(
-                                          color: Colors.blueGrey[900],
+                                          color: theme.isDark
+                                              ? Colors.blueGrey[900]
+                                              : Colors.blueGrey[200],
                                           elevation: 4,
                                           margin: const EdgeInsets.all(8),
                                           child: ListTile(
@@ -389,9 +401,12 @@ class _ChatsPageState extends State<ChatsPage> {
                                             ),
                                             title: Text(
                                               '${projectData.projectName}',
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
+                                                color: theme.isDark
+                                                    ? Colors.white
+                                                    : Colors.black,
                                               ),
                                             ),
                                             subtitle: FutureBuilder(
@@ -517,7 +532,9 @@ class _ChatsPageState extends State<ChatsPage> {
                                       if (messageSnapshot.connectionState ==
                                           ConnectionState.done) {
                                         return Card(
-                                          color: Colors.blueGrey[900],
+                                          color: theme.isDark
+                                              ? Colors.blueGrey[900]
+                                              : Colors.blueGrey[200],
                                           elevation: 4,
                                           margin: const EdgeInsets.all(8),
                                           child: ListTile(
@@ -590,11 +607,14 @@ class _ChatsPageState extends State<ChatsPage> {
                                                                   unreadMessagesCount
                                                                       .toString(),
                                                                   style:
-                                                                      const TextStyle(
+                                                                      TextStyle(
                                                                     fontSize:
                                                                         16,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    color: theme.isDark
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black,
                                                                   ),
                                                                 ),
                                                               )
@@ -627,12 +647,17 @@ class _ChatsPageState extends State<ChatsPage> {
                                               ],
                                             ),
                                             title: Text(
-                                              person.firstName +
-                                                  ' ' +
-                                                  person.lastName,
-                                              style: const TextStyle(
+                                              person is InstructorModel
+                                                  ? 'Dr. ${person.firstName} ${person.lastName}'
+                                                  : person.firstName +
+                                                      ' ' +
+                                                      person.lastName,
+                                              style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
+                                                color: theme.isDark
+                                                    ? Colors.white
+                                                    : Colors.black,
                                               ),
                                             ),
                                             subtitle: FutureBuilder(
@@ -659,8 +684,10 @@ class _ChatsPageState extends State<ChatsPage> {
                                                                 'messageText']
                                                             .toString()
                                                         : 'No messages',
-                                                    style: const TextStyle(
-                                                      color: Colors.white,
+                                                    style: TextStyle(
+                                                      color: theme.isDark
+                                                          ? Colors.white
+                                                          : Colors.black,
                                                     ),
                                                   );
                                                 } else if (messageSnapshot

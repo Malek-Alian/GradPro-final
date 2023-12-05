@@ -168,6 +168,7 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                           navigator.pop();
                                         },
                                         style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red[700],
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8),
@@ -445,6 +446,9 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                               child: Chip(
                                                 label: Text(
                                                   '${student.firstName} ${student.lastName}',
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
                                               ),
                                             );
@@ -702,6 +706,7 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                           navigator.pop();
                                         },
                                         style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red[700],
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8),
@@ -1110,6 +1115,9 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                       child: Chip(
                                         label: Text(
                                           '${student.firstName} ${student.lastName}',
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       ),
                                     );
@@ -1406,6 +1414,7 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                   navigator.pop();
                                 },
                                 style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red[700],
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),

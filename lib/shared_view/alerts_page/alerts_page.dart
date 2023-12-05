@@ -88,6 +88,11 @@ class AlertsPage extends StatelessWidget {
                                   title: Text(
                                     user.student?.alerts![reversedIndex]
                                         ['title'],
+                                    style: TextStyle(
+                                      color: theme.isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
                                   ),
                                   subtitle: Text(
                                     user.student?.alerts![reversedIndex]
@@ -399,6 +404,11 @@ class AlertsPage extends StatelessWidget {
                                   title: Text(
                                     user.instructor?.alerts![reversedIndex]
                                         ['title'],
+                                    style: TextStyle(
+                                      color: theme.isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
                                   ),
                                   subtitle: Text(
                                     user.instructor?.alerts![reversedIndex]
@@ -425,7 +435,14 @@ class AlertsPage extends StatelessWidget {
                                                 alerts:
                                                     user.instructor?.alerts);
                                           },
-                                          child: const Text('reject').tr(),
+                                          child: Text(
+                                            'reject',
+                                            style: TextStyle(
+                                              color: theme.isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          ).tr(),
                                         ),
                                       ),
                                     ),

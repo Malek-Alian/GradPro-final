@@ -42,7 +42,12 @@ class TeamsPage extends StatelessWidget {
                             vertical: 12, horizontal: 4),
                         child: ListTile(
                           leading: const Icon(Icons.groups),
-                          title: Text('${projectData[index].projectName}'),
+                          title: Text(
+                            '${projectData[index].projectName}',
+                            style: TextStyle(
+                              color: theme.isDark ? Colors.white : Colors.black,
+                            ),
+                          ),
                           onTap: () {
                             showDialog(
                               context: context,
@@ -63,8 +68,14 @@ class TeamsPage extends StatelessWidget {
                                     vertical: 12, horizontal: 4),
                                 child: ListTile(
                                   leading: const Icon(Icons.groups),
-                                  title:
-                                      Text('${projectData[index].projectName}'),
+                                  title: Text(
+                                    '${projectData[index].projectName}',
+                                    style: TextStyle(
+                                      color: theme.isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                  ),
                                   trailing: !(user.student?.hasTeam ?? false) &&
                                           projectData[index].major ==
                                               user.student?.major &&
@@ -159,7 +170,14 @@ class TeamsPage extends StatelessWidget {
                                 vertical: 12, horizontal: 4),
                             child: ListTile(
                               leading: const Icon(Icons.groups),
-                              title: Text('${projectData[index].projectName}'),
+                              title: Text(
+                                '${projectData[index].projectName}',
+                                style: TextStyle(
+                                  color: theme.isDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
                               trailing: projectData[index].major ==
                                       user.instructor?.major
                                   ? OutlinedButton(

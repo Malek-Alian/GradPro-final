@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:graduation_project/services/theme/change_theme.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/project_model.dart';
@@ -14,6 +15,7 @@ class TeamPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final UsersFirestore user = Provider.of<UsersFirestore>(context);
     final ProjectsFirestore project = Provider.of<ProjectsFirestore>(context);
+    final ChangeTheme theme = Provider.of<ChangeTheme>(context);
     final navigator = Navigator.of(context);
 
     return Scaffold(
@@ -41,10 +43,20 @@ class TeamPage extends StatelessWidget {
                           projectData = snapshot.data;
                           return ListTile(
                             leading: const Icon(Icons.groups),
-                            title: Text('${projectData?.projectName}'),
+                            title: Text(
+                              '${projectData?.projectName}',
+                              style: TextStyle(
+                                color:
+                                    theme.isDark ? Colors.white : Colors.black,
+                              ),
+                            ),
                             trailing: Text(
                               '${projectData?.projectLevel}',
-                              style: const TextStyle(fontSize: 17),
+                              style: TextStyle(
+                                fontSize: 17,
+                                color:
+                                    theme.isDark ? Colors.white : Colors.black,
+                              ),
                             ),
                             onTap: () async {
                               await project.loadProjectData(

@@ -7,6 +7,7 @@ import 'package:graduation_project/models/instructor_model.dart';
 import 'package:graduation_project/services/firebase/chats_firestore.dart';
 import 'package:graduation_project/services/firebase/user_auth.dart';
 import 'package:graduation_project/services/firebase/users_firestore.dart';
+import 'package:graduation_project/services/theme/change_theme.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
@@ -132,6 +133,7 @@ class _ChatPageState extends State<ChatPage> {
     final UserAuth auth = Provider.of<UserAuth>(context);
     final ChatsFirestore chat = Provider.of<ChatsFirestore>(context);
     final UsersFirestore user = Provider.of<UsersFirestore>(context);
+    final ChangeTheme theme = Provider.of<ChangeTheme>(context);
     final Map<String, dynamic>? args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final personUID = args?['personUID'];
@@ -150,7 +152,11 @@ class _ChatPageState extends State<ChatPage> {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Type a message...',
+                hintStyle: TextStyle(
+                  color: theme.isDark ? Colors.white : Colors.black,
+                ),
                 filled: true,
+                fillColor: theme.isDark ? Colors.black : Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -292,6 +298,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UsersFirestore user = Provider.of<UsersFirestore>(context);
+    final ChangeTheme theme = Provider.of<ChangeTheme>(context);
 
     return FutureBuilder(
       future: user.getPersonByUID(uid: sender),
@@ -299,7 +306,7 @@ class ChatBubble extends StatelessWidget {
         if (personSnapshot.connectionState == ConnectionState.done) {
           final person = personSnapshot.data;
           if (person != null) {
-            return _buildChatBubble(person, sender);
+            return _buildChatBubble(person, sender, theme);
           }
         }
         return Container();
@@ -307,13 +314,11 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildChatBubble(dynamic person, String uid) {
+  Widget _buildChatBubble(dynamic person, String uid, ChangeTheme theme) {
     final align =
         isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start;
     final senderHash = generateHash(uid);
     final isSpecialUid = uid == 'V6pFRD8zHaSOUNIqxBkbjYaTrKk1';
-    final isSpecialUid2 = uid == 'v2aAfYHa4JVRZxAR9djyarKvJwF3';
-    final isSpecialUid3 = uid == 'IARcjpFL7DfoVmdCo0K2tEGnzax2';
     Color textColor = Colors.white;
     BoxDecoration messageDecoration;
 
@@ -334,7 +339,6 @@ class ChatBubble extends StatelessWidget {
         ],
       );
     } else {
-      // Use the regular background for other uids
       final bgColor =
           Color(int.parse(senderHash.substring(0, 6), radix: 16) | 0xFF000000);
       final isDark = bgColor.computeLuminance() < 0.5;
@@ -357,43 +361,56 @@ class ChatBubble extends StatelessWidget {
       child: Row(
         mainAxisAlignment:
             isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: align,
         children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(
-              person.profilePicture ?? 'assets/images/default_avatar.jpg',
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: messageDecoration,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                teamChat
-                    ? Text(
-                        person is InstructorModel
-                            ? 'Dr. ${person.firstName} ${person.lastName}'
-                            : '${person.firstName} ${person.lastName}',
-                        style: TextStyle(
-                          color: textColor, // You can adjust the text color
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : Container(),
-                teamChat ? const SizedBox(height: 4) : Container(),
-                Text(
-                  text,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 16,
-                  ),
+          Row(
+            textDirection: isMyMessage ? TextDirection.rtl : TextDirection.ltr,
+            crossAxisAlignment: align,
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(
+                  person.profilePicture ?? 'assets/images/default_avatar.jpg',
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: messageDecoration,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    teamChat
+                        ? Text(
+                            person is InstructorModel
+                                ? 'Dr. ${person.firstName} ${person.lastName}'
+                                : '${person.firstName} ${person.lastName}',
+                            style: TextStyle(
+                              color: isSpecialUid
+                                  ? !theme.isDark
+                                      ? Colors.black
+                                      : Colors.white
+                                  : textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : Container(),
+                    teamChat ? const SizedBox(height: 4) : Container(),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        color: isSpecialUid
+                            ? !theme.isDark
+                                ? Colors.black
+                                : Colors.white
+                            : textColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
