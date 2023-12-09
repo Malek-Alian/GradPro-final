@@ -312,7 +312,8 @@ class TeamDialog extends StatelessWidget {
                                                             });
                                                       },
                                                       child: const Text(
-                                                          'Send Message'),
+                                                              'Send Message')
+                                                          .tr(),
                                                     ),
                                                   ),
                                             ],

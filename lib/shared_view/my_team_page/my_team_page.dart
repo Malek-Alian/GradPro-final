@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graduation_project/services/firebase/user_auth.dart';
 import 'package:graduation_project/shared_view/chat_page/chat_page.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
@@ -432,7 +433,8 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                                                           });
                                                                     },
                                                                     child: const Text(
-                                                                        'Send Message'),
+                                                                            'Send Message')
+                                                                        .tr(),
                                                                   ),
                                                                 ),
                                                             ],
@@ -688,22 +690,32 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                       ),
                                       ElevatedButton(
                                         onPressed: () async {
-                                          formKey.currentState?.save();
-                                          Map<dynamic, dynamic> task = {
-                                            'url': url,
-                                            'from':
-                                                '${user.student?.firstName} ${user.student?.lastName}',
-                                          };
-                                          project.projectData?.files?.add(task);
-                                          await project.updateProjectData(
-                                            projectID:
-                                                project.projectData?.projectID,
-                                            files: project.projectData?.files,
-                                          );
-                                          await project.loadProjectData(
+                                          if (url.startsWith('https://') ||
+                                              url.startsWith('http://')) {
+                                            formKey.currentState?.save();
+                                            Map<dynamic, dynamic> file = {
+                                              'url': url,
+                                              'from':
+                                                  '${user.student?.firstName} ${user.student?.lastName}',
+                                            };
+                                            project.projectData?.files
+                                                ?.add(file);
+                                            await project.updateProjectData(
                                               projectID: project
-                                                  .projectData?.projectID);
-                                          navigator.pop();
+                                                  .projectData?.projectID,
+                                              files: project.projectData?.files,
+                                            );
+                                            await project.loadProjectData(
+                                                projectID: project
+                                                    .projectData?.projectID);
+                                            navigator.pop();
+                                          } else {
+                                            Fluttertoast.showToast(
+                                              msg:
+                                                  'File url should start with https:// or http://',
+                                              toastLength: Toast.LENGTH_LONG,
+                                            );
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red[700],
@@ -1101,7 +1113,8 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                                                   });
                                                             },
                                                             child: const Text(
-                                                                'Send Message'),
+                                                                    'Send Message')
+                                                                .tr(),
                                                           ),
                                                         ),
                                                     ],
@@ -1397,21 +1410,30 @@ class _MyTeamPageState extends State<MyTeamPage> {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  formKey.currentState?.save();
-                                  Map<dynamic, dynamic> task = {
-                                    'url': url,
-                                    'from':
-                                        'Dr. ${user.instructor?.firstName} ${user.instructor?.lastName}',
-                                  };
-                                  project.projectData?.files?.add(task);
-                                  await project.updateProjectData(
-                                    projectID: project.projectData?.projectID,
-                                    files: project.projectData?.files,
-                                  );
-                                  await project.loadProjectData(
-                                      projectID:
-                                          project.projectData?.projectID);
-                                  navigator.pop();
+                                  if (url.startsWith('https://') ||
+                                      url.startsWith('http://')) {
+                                    formKey.currentState?.save();
+                                    Map<dynamic, dynamic> file = {
+                                      'url': url,
+                                      'from':
+                                          'Dr. ${user.instructor?.firstName} ${user.instructor?.lastName}',
+                                    };
+                                    project.projectData?.files?.add(file);
+                                    await project.updateProjectData(
+                                      projectID: project.projectData?.projectID,
+                                      files: project.projectData?.files,
+                                    );
+                                    await project.loadProjectData(
+                                        projectID:
+                                            project.projectData?.projectID);
+                                    navigator.pop();
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg:
+                                          'File url should start with https:// or http://',
+                                      toastLength: Toast.LENGTH_LONG,
+                                    );
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red[700],

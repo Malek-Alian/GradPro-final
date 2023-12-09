@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -92,21 +91,17 @@ class _LoginPageState extends State<LoginPage> {
                       User? user = await auth.activate;
                       if (user != null) {
                         if (user.email?.contains('std') ?? false) {
-                          String? token =
-                              await FirebaseMessaging.instance.getToken();
                           await userFirestore.updateStudentData(
-                              registered: true, token: token);
+                              registered: true, token: '');
                         } else {
-                          String? token =
-                              await FirebaseMessaging.instance.getToken();
                           await userFirestore.updateInstructorData(
-                              registered: true, token: token);
+                              registered: true, token: '');
                         }
-                        // ignore: use_build_context_synchronously
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Navigator.pushNamedAndRemoveUntil(
+                        if (mounted) {
+                          await Navigator.pushNamedAndRemoveUntil(
                               context, Wrapper.routeName, (route) => false);
-                        });
+                        }
+                        setState(() {});
                       } else {
                         Fluttertoast.showToast(
                           msg: auth.errorMessage,
@@ -114,8 +109,9 @@ class _LoginPageState extends State<LoginPage> {
                         );
                         auth.setMessage = '';
                       }
-                      if (!mounted) return;
-                      FocusScope.of(context).requestFocus(FocusNode());
+                      if (mounted) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,

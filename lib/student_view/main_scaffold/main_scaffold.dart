@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/app_bar.dart';
@@ -36,7 +37,6 @@ class _StudentMainScaffoldState extends State<StudentMainScaffold> {
     return true;
   }
 
-  // * Take index from TheBottomNavigator
   callback(index) {
     setState(() {
       pageIndex = index;
@@ -65,6 +65,7 @@ class _StudentMainScaffoldState extends State<StudentMainScaffold> {
       future: loadAllData(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          FlutterNativeSplash.remove();
           return Scaffold(
             appBar: TheAppBar(
               color: appBarColors[pageIndex],

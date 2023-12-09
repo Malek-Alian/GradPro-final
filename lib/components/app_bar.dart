@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:graduation_project/components/announcements.dart';
 import 'package:graduation_project/shared_view/chats_page/chats_page.dart';
 import 'package:provider/provider.dart';
 
 import '../services/firebase/users_firestore.dart';
 
 class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
-  // * PreferredSizeWidget needed to make AppBar
   const TheAppBar({super.key, required this.color});
   final Color color;
 
@@ -16,6 +16,22 @@ class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // * HomePage app bar
     return AppBar(
+      centerTitle: true,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.announcement,
+        ),
+        onPressed: () {
+          if (user.student != null || user.instructor != null) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return const Announcements();
+              },
+            );
+          }
+        },
+      ),
       title: Text(
         user.student == null && user.instructor == null
             ? 'welcome'.tr()
@@ -43,6 +59,5 @@ class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(
-      AppBar().preferredSize.height); // * To set height of TheAppBar
+  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
 }

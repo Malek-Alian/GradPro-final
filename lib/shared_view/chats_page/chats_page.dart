@@ -67,7 +67,7 @@ class _ChatsPageState extends State<ChatsPage> {
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
-        ),
+        ).tr(),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_rounded,

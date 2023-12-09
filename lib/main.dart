@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:graduation_project/services/firebase/announcements_firestore.dart';
 import 'package:graduation_project/services/firebase/chats_firestore.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: WidgetsBinding.instance);
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en', 'US'), Locale('ar', 'JO')],
@@ -44,6 +47,9 @@ class GPMS extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => ChatsFirestore(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => AnnouncementsFirestore(),
           ),
           ChangeNotifierProxyProvider<UsersFirestore, ProjectsFirestore>(
             create: (context) => ProjectsFirestore(),

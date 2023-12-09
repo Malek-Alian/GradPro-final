@@ -392,7 +392,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                                                 });
                                                           },
                                                           child: const Text(
-                                                              'Send Message'),
+                                                                  'Send Message')
+                                                              .tr(),
                                                         ),
                                                       ),
                                                 ],

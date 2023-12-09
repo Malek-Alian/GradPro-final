@@ -173,7 +173,7 @@ class StudentDialog extends StatelessWidget {
                               'teamChat': false,
                             });
                       },
-                      child: const Text('Send Message'),
+                      child: const Text('Send Message').tr(),
                     ),
                   ),
               ],

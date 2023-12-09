@@ -1,13 +1,25 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 import 'choose.dart';
 
-class AppIntro extends StatelessWidget {
+class AppIntro extends StatefulWidget {
   const AppIntro({super.key});
+
+  @override
+  State<AppIntro> createState() => _AppIntroState();
+}
+
+class _AppIntroState extends State<AppIntro> {
+  @override
+  void initState() {
+    super.initState();
+    FlutterNativeSplash.remove();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,6 +244,7 @@ class AppIntro extends StatelessWidget {
             width: 85,
             height: 85,
             child: FloatingActionButton(
+              shape: const CircleBorder(),
               backgroundColor: Colors.white,
               child: Localizations.localeOf(context).languageCode == 'en'
                   ? SvgPicture.asset(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/app_bar.dart';
@@ -23,15 +24,13 @@ class InstructorMainScaffold extends StatefulWidget {
 class _InstructorMainScaffold extends State<InstructorMainScaffold> {
   int pageIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
+  Future<bool> loadAllData() async {
     final UsersFirestore user =
         Provider.of<UsersFirestore>(context, listen: false);
-    user.loadInstructorData();
+    await user.loadInstructorData();
+    return true;
   }
 
-  // * Take index from TheBottomNavigator
   callback(index) {
     setState(() {
       pageIndex = index;
@@ -56,13 +55,32 @@ class _InstructorMainScaffold extends State<InstructorMainScaffold> {
       theme.isDark ? Colors.black : Colors.white,
     ];
 
-    return Scaffold(
-      appBar: TheAppBar(
-        color: appBarColors[pageIndex],
-      ),
-      body: bodies[pageIndex],
-      bottomNavigationBar:
-          InstructorBottomNavigator(callbackFunction: callback),
+    return FutureBuilder(
+      future: loadAllData(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          FlutterNativeSplash.remove();
+          return Scaffold(
+            appBar: TheAppBar(
+              color: appBarColors[pageIndex],
+            ),
+            body: bodies[pageIndex],
+            bottomNavigationBar:
+                InstructorBottomNavigator(callbackFunction: callback),
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return Container(
+            color: Colors.black,
+            child: const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Colors.white),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

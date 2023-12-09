@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graduation_project/models/instructor_model.dart';
 import 'package:graduation_project/services/firebase/chats_firestore.dart';
 import 'package:graduation_project/services/firebase/user_auth.dart';
@@ -49,81 +51,84 @@ class _ChatPageState extends State<ChatPage> {
     final teamChat = args?['teamChat'];
     final projectID = args?['projectID'];
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        title: Text(
-          firstName + ' ' + lastName ?? 'Chat Name',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder<List<QueryDocumentSnapshot>>(
-                stream: teamChat
-                    ? chat.getMessagesInChatStream(projectID)
-                    : auth.currentUser.uid.compareTo(personUID) < 0
-                        ? chat.getMessagesInChatStream(
-                            auth.currentUser.uid + personUID)
-                        : chat.getMessagesInChatStream(
-                            personUID + auth.currentUser.uid),
-                builder: (context, snapshot) {
-                  teamChat
-                      ? chat.markMessagesAsRead(projectID, auth.currentUser.uid)
-                      : auth.currentUser.uid.compareTo(personUID) < 0
-                          ? chat.markMessagesAsRead(
-                              auth.currentUser.uid + personUID,
-                              auth.currentUser.uid)
-                          : chat.markMessagesAsRead(
-                              personUID + auth.currentUser.uid,
-                              auth.currentUser.uid);
-                  if (snapshot.connectionState == ConnectionState.active) {
-                    if (snapshot.hasData) {
-                      final messages = snapshot.data;
-                      return ListView(
-                        reverse: true,
-                        children: messages?.map((doc) {
-                              final message =
-                                  doc.data() as Map<String, dynamic>;
-                              final isMyMessage =
-                                  message['senderID'] == auth.currentUser.uid;
-                              return ChatBubble(
-                                teamChat: teamChat,
-                                sender: message['senderID'],
-                                text: message['messageText'],
-                                isMyMessage: isMyMessage,
-                              );
-                            }).toList() ??
-                            [],
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Center(
-                        child: Text('Error loading messages'),
-                      );
-                    }
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            firstName + ' ' + lastName ?? 'Chat Name',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
-            _buildInputField(),
-          ],
+          ),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_rounded,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<List<QueryDocumentSnapshot>>(
+                  stream: teamChat
+                      ? chat.getMessagesInChatStream(projectID)
+                      : auth.currentUser.uid.compareTo(personUID) < 0
+                          ? chat.getMessagesInChatStream(
+                              auth.currentUser.uid + personUID)
+                          : chat.getMessagesInChatStream(
+                              personUID + auth.currentUser.uid),
+                  builder: (context, snapshot) {
+                    teamChat
+                        ? chat.markMessagesAsRead(
+                            projectID, auth.currentUser.uid)
+                        : auth.currentUser.uid.compareTo(personUID) < 0
+                            ? chat.markMessagesAsRead(
+                                auth.currentUser.uid + personUID,
+                                auth.currentUser.uid)
+                            : chat.markMessagesAsRead(
+                                personUID + auth.currentUser.uid,
+                                auth.currentUser.uid);
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      if (snapshot.hasData) {
+                        final messages = snapshot.data;
+                        return ListView(
+                          reverse: true,
+                          children: messages?.map((doc) {
+                                final message =
+                                    doc.data() as Map<String, dynamic>;
+                                final isMyMessage =
+                                    message['senderID'] == auth.currentUser.uid;
+                                return ChatBubble(
+                                  teamChat: teamChat,
+                                  sender: message['senderID'],
+                                  text: message['messageText'],
+                                  isMyMessage: isMyMessage,
+                                );
+                              }).toList() ??
+                              [],
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Error loading messages'),
+                        );
+                      }
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
+              ),
+              _buildInputField(),
+            ],
+          ),
         ),
       ),
     );
@@ -299,6 +304,15 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final UsersFirestore user = Provider.of<UsersFirestore>(context);
     final ChangeTheme theme = Provider.of<ChangeTheme>(context);
+    final Locale locale = Localizations.localeOf(context);
+
+    void copyToClipboard(String message) {
+      Clipboard.setData(ClipboardData(text: message));
+      Fluttertoast.showToast(
+        msg: 'Message copied to clipboard',
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
 
     return FutureBuilder(
       future: user.getPersonByUID(uid: sender),
@@ -306,7 +320,8 @@ class ChatBubble extends StatelessWidget {
         if (personSnapshot.connectionState == ConnectionState.done) {
           final person = personSnapshot.data;
           if (person != null) {
-            return _buildChatBubble(person, sender, theme);
+            return _buildChatBubble(
+                person, sender, theme, locale, copyToClipboard);
           }
         }
         return Container();
@@ -314,7 +329,8 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildChatBubble(dynamic person, String uid, ChangeTheme theme) {
+  Widget _buildChatBubble(dynamic person, String uid, ChangeTheme theme,
+      Locale locale, copyToClipboard) {
     final align =
         isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start;
     final senderHash = generateHash(uid);
@@ -363,7 +379,13 @@ class ChatBubble extends StatelessWidget {
             isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           Row(
-            textDirection: isMyMessage ? TextDirection.rtl : TextDirection.ltr,
+            textDirection: isMyMessage
+                ? locale.languageCode == 'ar'
+                    ? TextDirection.ltr
+                    : TextDirection.rtl
+                : locale.languageCode == 'ar'
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
             crossAxisAlignment: align,
             children: [
               CircleAvatar(
@@ -373,41 +395,46 @@ class ChatBubble extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: messageDecoration,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    teamChat
-                        ? Text(
-                            person is InstructorModel
-                                ? 'Dr. ${person.firstName} ${person.lastName}'
-                                : '${person.firstName} ${person.lastName}',
-                            style: TextStyle(
-                              color: isSpecialUid
-                                  ? !theme.isDark
-                                      ? Colors.black
-                                      : Colors.white
-                                  : textColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        : Container(),
-                    teamChat ? const SizedBox(height: 4) : Container(),
-                    Text(
-                      text,
-                      style: TextStyle(
-                        color: isSpecialUid
-                            ? !theme.isDark
-                                ? Colors.black
-                                : Colors.white
-                            : textColor,
-                        fontSize: 16,
+              GestureDetector(
+                onLongPress: () {
+                  copyToClipboard(text);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: messageDecoration,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      teamChat
+                          ? Text(
+                              person is InstructorModel
+                                  ? 'Dr. ${person.firstName} ${person.lastName}'
+                                  : '${person.firstName} ${person.lastName}',
+                              style: TextStyle(
+                                color: isSpecialUid
+                                    ? !theme.isDark
+                                        ? Colors.black
+                                        : Colors.white
+                                    : textColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : Container(),
+                      teamChat ? const SizedBox(height: 4) : Container(),
+                      Text(
+                        text,
+                        style: TextStyle(
+                          color: isSpecialUid
+                              ? !theme.isDark
+                                  ? Colors.black
+                                  : Colors.white
+                              : textColor,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

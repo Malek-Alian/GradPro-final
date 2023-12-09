@@ -47,7 +47,7 @@ class SupervisorsDialog extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       content: SizedBox(
         width: 400,
-        height: 400,
+        height: 350,
         child: StreamBuilder(
           stream: user.getInstructors,
           builder: (context, snapshot) {
@@ -330,7 +330,8 @@ class SupervisorsDialog extends StatelessWidget {
                                                     'teamChat': false,
                                                   });
                                             },
-                                            child: const Text('Send Message'),
+                                            child:
+                                                const Text('Send Message').tr(),
                                           ),
                                         ),
                                     ],
