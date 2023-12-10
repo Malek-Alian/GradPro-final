@@ -464,9 +464,20 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                   [],
                             ),
                             15.verticalSpace,
-                            Text(
-                              '${'tasks'.tr()}:',
-                              style: Theme.of(context).textTheme.titleMedium,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${'tasks'.tr()}:',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                Text(
+                                  '${project.projectData?.tasks?.length}',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                )
+                              ],
                             ),
                             ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
@@ -530,9 +541,20 @@ class _MyTeamPageState extends State<MyTeamPage> {
                               },
                             ),
                             20.verticalSpace,
-                            Text(
-                              '${'Files'.tr()}:',
-                              style: Theme.of(context).textTheme.titleMedium,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${'Files'.tr()}:',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                Text(
+                                  '${project.projectData?.files?.length}',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                )
+                              ],
                             ),
                             ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
@@ -690,9 +712,9 @@ class _MyTeamPageState extends State<MyTeamPage> {
                                       ),
                                       ElevatedButton(
                                         onPressed: () async {
+                                          formKey.currentState?.save();
                                           if (url.startsWith('https://') ||
                                               url.startsWith('http://')) {
-                                            formKey.currentState?.save();
                                             Map<dynamic, dynamic> file = {
                                               'url': url,
                                               'from':
@@ -1144,9 +1166,18 @@ class _MyTeamPageState extends State<MyTeamPage> {
                           [],
                     ),
                     15.verticalSpace,
-                    Text(
-                      '${'tasks'.tr()}:',
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${'tasks'.tr()}:',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          '${project.projectData?.tasks?.length}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        )
+                      ],
                     ),
                     5.verticalSpace,
                     ListView.builder(
@@ -1261,9 +1292,18 @@ class _MyTeamPageState extends State<MyTeamPage> {
                       ],
                     ),
                     20.verticalSpace,
-                    Text(
-                      '${'Files'.tr()}:',
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${'Files'.tr()}:',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          '${project.projectData?.files?.length}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        )
+                      ],
                     ),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),

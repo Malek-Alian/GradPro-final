@@ -82,7 +82,7 @@ class _AnnouncementsState extends State<Announcements> {
             flex: 0,
             child: SizedBox(
               width: 300,
-              height: 300,
+              height: 350,
               child: StreamBuilder<List<DocumentSnapshot>>(
                 stream: announcementsFirestore.streamAllAnnouncements(),
                 builder: (context, snapshot) {
@@ -133,6 +133,9 @@ class _AnnouncementsState extends State<Announcements> {
                                 ? ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                      ),
                                     ),
                                     onPressed: () {
                                       announcementsFirestore.deleteAnnouncement(
@@ -182,6 +185,9 @@ class _AnnouncementsState extends State<Announcements> {
                     ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                         onPressed: () {
                           if (textController.text.isNotEmpty) {
