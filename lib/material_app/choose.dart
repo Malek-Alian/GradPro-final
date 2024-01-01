@@ -18,9 +18,21 @@ class Choose extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SvgPicture.asset(
-            'assets/images/logo.svg',
-            width: 200,
+          Column(
+            children: [
+              SvgPicture.asset(
+                'assets/images/logo.svg',
+                width: 200,
+              ),
+              15.verticalSpace,
+              const Text(
+                'GradPro',
+                style: TextStyle(
+                  fontFamily: 'Bruno Ace SC',
+                  fontSize: 40,
+                ),
+              ),
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -51,7 +51,9 @@ class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
             Icons.chat,
           ),
           onPressed: () {
-            Navigator.pushNamed(context, ChatsPage.routeName);
+            if (user.student != null || user.instructor != null) {
+              Navigator.pushNamed(context, ChatsPage.routeName);
+            }
           },
         ),
       ],

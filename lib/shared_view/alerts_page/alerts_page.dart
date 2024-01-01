@@ -97,6 +97,11 @@ class AlertsPage extends StatelessWidget {
                                   subtitle: Text(
                                     user.student?.alerts![reversedIndex]
                                         ['body'],
+                                    style: TextStyle(
+                                      color: theme.isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
                                   ),
                                 ),
                                 Row(
@@ -413,6 +418,11 @@ class AlertsPage extends StatelessWidget {
                                   subtitle: Text(
                                     user.instructor?.alerts![reversedIndex]
                                         ['body'],
+                                    style: TextStyle(
+                                      color: theme.isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
                                   ),
                                 ),
                                 Row(

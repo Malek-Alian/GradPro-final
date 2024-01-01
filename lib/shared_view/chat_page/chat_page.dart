@@ -390,9 +390,11 @@ class ChatBubble extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundImage: NetworkImage(
-                  person.profilePicture ?? 'assets/images/default_avatar.jpg',
-                ),
+                backgroundImage:
+                    person.profilePicture != '' && person.profilePicture != null
+                        ? NetworkImage(person.profilePicture)
+                        : const AssetImage('assets/images/defaultAvatar.png')
+                            as ImageProvider,
               ),
               const SizedBox(width: 8),
               GestureDetector(

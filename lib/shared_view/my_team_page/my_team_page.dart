@@ -1450,6 +1450,7 @@ class _MyTeamPageState extends State<MyTeamPage> {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
+                                  formKey.currentState?.save();
                                   if (url.startsWith('https://') ||
                                       url.startsWith('http://')) {
                                     formKey.currentState?.save();

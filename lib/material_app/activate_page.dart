@@ -84,6 +84,11 @@ class ActivatePage extends StatelessWidget {
                           toastLength: Toast.LENGTH_LONG,
                         );
                         auth.setMessage = '';
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: 'Set password email has been sent to your email',
+                          toastLength: Toast.LENGTH_LONG,
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(

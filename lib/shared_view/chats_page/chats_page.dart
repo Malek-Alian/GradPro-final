@@ -111,7 +111,7 @@ class _ChatsPageState extends State<ChatsPage> {
                                               const CircleAvatar(
                                                 radius: 32,
                                                 backgroundImage: AssetImage(
-                                                  'assets/images/defaultAvatar.png',
+                                                  'assets/images/group2.png',
                                                 ),
                                               ),
                                               Positioned(
@@ -324,7 +324,7 @@ class _ChatsPageState extends State<ChatsPage> {
                                                 const CircleAvatar(
                                                   radius: 32,
                                                   backgroundImage: AssetImage(
-                                                    'assets/images/defaultAvatar.png',
+                                                    'assets/images/group2.png',
                                                   ),
                                                 ),
                                                 Positioned(

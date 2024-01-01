@@ -133,6 +133,7 @@ class _AnnouncementsState extends State<Announcements> {
                                 ? ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
                                       textStyle: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -185,9 +186,7 @@ class _AnnouncementsState extends State<Announcements> {
                     ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
-                          textStyle: const TextStyle(
-                            color: Colors.white,
-                          ),
+                          foregroundColor: Colors.white,
                         ),
                         onPressed: () {
                           if (textController.text.isNotEmpty) {

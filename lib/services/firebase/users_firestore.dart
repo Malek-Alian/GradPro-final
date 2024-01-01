@@ -74,15 +74,15 @@ class UsersFirestore extends ChangeNotifier {
   // ! Student
   Future<void> addStudent() async {
     Map<String, dynamic> userData = {
-      'firstName': '',
-      'lastName': '',
-      'major': '',
-      'projectLevel': '',
-      'studentID': '',
-      'studentUID': '',
+      'firstName': 'اريج',
+      'lastName': 'داود',
+      'major': 'CIS',
+      'projectLevel': '1',
+      'studentID': '2035292',
+      'studentUID': 'XmhJXBWYiZbPwMJyIucvbqvmz4i2',
       'bio': '',
       'hasTeam': false,
-      'registered': false,
+      'registered': true,
       'profilePicture': '',
       'projectID': '',
       'token': '',

@@ -3,6 +3,26 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static ThemeData appTheme(bool isDarkTheme, BuildContext context) {
     return ThemeData(
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: isDarkTheme ? Colors.red : Colors.black,
+          side: BorderSide(
+            color: isDarkTheme ? Colors.white : Colors.black,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.red,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: isDarkTheme ? Colors.red : Colors.black,
       ),

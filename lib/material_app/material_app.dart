@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:graduation_project/services/firebase/users_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../components/routes.dart';
@@ -16,6 +17,7 @@ class TheMaterialApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ChangeTheme theme = Provider.of(context);
+    final UsersFirestore users = Provider.of<UsersFirestore>(context);
     theme.updateSharedTheme();
 
     return ScreenUtilInit(
@@ -35,6 +37,25 @@ class TheMaterialApp extends StatelessWidget {
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
+            // home: Scaffold(
+            //   body: Center(
+            //     child: Column(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         ElevatedButton(
+            //           onPressed: () {
+            //             users.addStudent();
+            //           },
+            //           child: const Text('Student'),
+            //         ),
+            //         ElevatedButton(
+            //           onPressed: () {},
+            //           child: const Text('Student'),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             home: const Wrapper(),
           ),
         );
